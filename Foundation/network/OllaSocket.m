@@ -7,7 +7,7 @@
 //
 
 #import "OllaSocket.h"
-#import "Olla4iOS.h"
+#import "foundation.h"
 
 #import "sys/socket.h"
 #import "netinet/in.h"
@@ -67,7 +67,6 @@
         CFSocketContext context = {0,(__bridge void *)(self),NULL,NULL,NULL};
         _socket = CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_TCP, kCFSocketConnectCallBack, socketConnectionCallBack, &context);
         if (_socket==NULL || !CFSocketIsValid(_socket)) {
-            DDLogError(@"cfsocket create fail");
             [self connectionFailHandler:[[NSError alloc] initWithDomain:@"com.olla.im.invalideSocket" code:-1 userInfo:@{@"message":@"socket error when create socket"}]];
             CFRelease(_socket);
             _socket = NULL;
@@ -82,15 +81,12 @@
     if (_socket!=NULL) {
         
         if ([self checkISDomain:host]) {//如果是域名
-            DDLogInfo(@"域名host=%@",host);
             host = [self IPFromHost:host];
             if (host==nil) {
-                DDLogError(@"域名转ip解析错误");
                 // 这里会报ollasocket dealloc的崩溃
                 [self connectionFailHandler:[[NSError alloc] initWithDomain:@"com.olla.im.invalideSocket" code:-1 userInfo:@{@"message":@"域名转ip解析错误"}]];
                 return;
             }
-            DDLogInfo(@"域名转ip:ip=%@",host);
         }
         
         
@@ -107,21 +103,18 @@
         // addr4-->NSData
         CFDataRef address = CFDataCreate(kCFAllocatorDefault, (UInt8 *)&addr4, sizeof(addr4));
         if (address == NULL) {
-            DDLogError(@"address to data create fail");
             [self connectionFailHandler:[[NSError alloc] initWithDomain:@"com.olla.im.invalideSocket" code:-1 userInfo:@{@"message":@"socket error when create address"}]];
             return;
         }
         //NSZombie_OllaSocket!!
         //_socket 为nil崩溃，这是怎么搞的！
         if (_socket==NULL) {
-            DDLogError(@"CFSocketConnectToAddress 发现socket为nil，重新开启连接");
             [self connectionFailHandler:[[NSError alloc] initWithDomain:@"com.olla.im.invalideSocket" code:-1 userInfo:@{@"message":@"CFSocketConnectToAddress 发现socket为nil，重新开始连接"}]];
             return;
             
         }
         CFSocketError status = CFSocketConnectToAddress(_socket, address, timeout);
         if (status != kCFSocketSuccess) {
-            DDLogError(@"socket connect to address fail");
             [self connectionFailHandler:[[NSError alloc] initWithDomain:@"com.olla.im.invalideSocket" code:-1 userInfo:@{@"message":@"socket error when connect to address"}]];
             
             CFRelease(address);
@@ -156,7 +149,6 @@
     //这个操作要数秒才返回，如果有问题会不会导致页面打不开！！！，如果断网了这里就完蛋了！！
     struct hostent *hostent = gethostbyname([host UTF8String]);
     if (hostent==NULL) {
-        DDLogError(@"通过域名获取主机信息失败");
         return nil;
     }
     
@@ -202,7 +194,6 @@
     unsigned long length = sizeof(addr);
     //这里socket为nil，就会崩溃
     if (_socket==NULL) {
-        DDLogError(@"getsockname() found socket be nil...");
         return -1;
     }
     getsockname(CFSocketGetNative(_socket), (struct sockaddr *)&addr, (socklen_t *)&length);
@@ -276,7 +267,7 @@ static void socketConnectionCallBack(CFSocketRef socket,CFSocketCallBackType typ
 
 - (void)connectionSuccessHandler{
     [self startReadThread];
-    DDLogInfo(@"local addr:ip=(:%d)",[self port]);//网络慢时,获取port操作也比较耗时，其次是login操作
+    //网络慢时,获取port操作也比较耗时，其次是login操作
     if ([_delegate respondsToSelector:@selector(socket:didConnectToHost:port:)]) {
         [_delegate socket:self didConnectToHost:_host port:_port];
     }

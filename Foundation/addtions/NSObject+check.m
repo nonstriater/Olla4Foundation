@@ -6,7 +6,8 @@
 //  Copyright (c) 2014年 xiaoran. All rights reserved.
 //
 
-#import "Olla4iOS.h"
+#import "foundation.h"
+#import "objc/runtime.h"
 
 @implementation NSObject (check)
 

@@ -6,7 +6,6 @@
 //  Copyright (c) 2014年 xiaoran. All rights reserved.
 //
 
-#import "Olla4iOS.h"
 #import "foundation.h"
 
 @implementation NSDictionary (additions)

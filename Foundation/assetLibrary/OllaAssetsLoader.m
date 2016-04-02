@@ -8,7 +8,7 @@
 
 #import "OllaAssetsLoader.h"
 #import "ALAsset+additions.h"
-#import "Olla4iOS.h"
+#import "foundation.h"
 
 @interface OllaAssetsLoader ()
 
@@ -69,7 +69,6 @@
             
         } failureBlock:^(NSError *error) {
             if (error) {
-                DDLogError(@"遍历系统相册失败：%@",error);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     failure(error);
                 });

@@ -9,7 +9,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "NSString+MD5.h"
 #import "NSData+AES.h"
-#import "Olla4iOS.h"
+#import "foundation.h"
 
 @implementation NSString (MD5)
 
@@ -63,16 +63,11 @@
 
 - (NSData *)base64Decode{
     
-    if (IS_IOS7) {
-        return nil;
-    }else{
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated"
-        return [[NSData alloc] initWithBase64Encoding:self];
+    return [[NSData alloc] initWithBase64Encoding:self];
 #pragma clang diagnostic pop
-    }
 
-    return nil;
 }
 
 

@@ -7,7 +7,7 @@
 //
 
 #import "OllaPreference.h"
-#import "Olla4iOS.h"
+#import "foundation.h"
 
 @interface OllaPreference (){
     
@@ -54,7 +54,6 @@
     if (!_currentFilePath) {
         NSString *filePath = [self.path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@.plist",self.fullNamespace ,self.uid]];
         if (![OllaSandBox createFileIfNotExist:filePath]) {
-            DDLogError(@"创建文件失败:path=%@",filePath);
             return nil;
         }
         _currentFilePath = filePath;
@@ -83,7 +82,6 @@
      
         _uid = uid;
         if ([uid length]==0) {
-            DDLogWarn(@"uid设置为空,设置uid先");
             return;
         }
     }
@@ -91,7 +89,6 @@
 
 - (id)valueForKey:(NSString *)defaultName{
     if ([self.uid length]==0) {
-        DDLogError(@"uid设置为空,设置uid先");
         return nil;
     }
     id value = [self.userInfo valueForKey:defaultName];
@@ -100,7 +97,6 @@
 
 - (void)setValue:(id)value forKey:(NSString *)defaultName{
     if ([self.uid length]==0) {
-        DDLogError(@"设置uid先");
         return;
     }
     if (!value) {
@@ -120,7 +116,6 @@
 
 - (void)removeValueForKey:(NSString *)defaultName{
     if ([self.uid length]==0) {
-        DDLogError(@"设置uid先");
         return;
     }
     [self.userInfo removeObjectForKey:defaultName];
@@ -128,12 +123,7 @@
 }
 
 - (BOOL)synchronize{
-
-   BOOL ret = [self.userInfo writeToFile:_currentFilePath atomically:YES];
-    if (!ret) {
-        DDLogError(@"preference 写入plist文件失败，userInfo = %@,filePath=%@",self.userInfo,[self filePath]);
-    }
-    
+    BOOL ret = [self.userInfo writeToFile:_currentFilePath atomically:YES];
     return ret;
 }
 
