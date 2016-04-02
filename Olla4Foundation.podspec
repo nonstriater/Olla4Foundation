@@ -13,6 +13,6 @@ Pod::Spec.new do |s|
 	s.library 		= 'sqlite3'
 
 	s.source 		= {:git => 'https://github.com/nonstriater/Olla4Foundation.git'}
-  	s.source_files = '**/*.{h,m}'
+  	s.source_files = 'Foundation/**/*.{h,m}'
 
 end 
