@@ -17,28 +17,14 @@
 //}
 
 - (BOOL)containsSubString:(NSString *)string{
-    if (IS_IOS8) {
-         return [self containsString:string];
-    }
-    
     return ([self rangeOfString:string].length != 0);
 }
 
 - (CGSize)sizeWithFont:(UIFont *)font constrainedSize:(CGSize)size{
-    
     CGSize retSize = CGSizeZero;
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-        
-        CGRect rect =  [self boundingRectWithSize:size options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil];
-        retSize.width = ceil(rect.size.width);
-        retSize.height = ceil(rect.size.height);
-        
-    }else{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-        retSize = [self sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
-#pragma clang diagnostic pop
-    }
+    CGRect rect =  [self boundingRectWithSize:size options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil];
+    retSize.width = ceil(rect.size.width);
+    retSize.height = ceil(rect.size.height);
     
     return retSize;
 }

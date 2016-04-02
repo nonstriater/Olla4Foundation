@@ -10,6 +10,11 @@
 
 @interface UIDevice (Hardware)
 
++ (BOOL)isIphone;
++ (BOOL)isIpad;
++ (BOOL)isIOS7;
++ (BOOL)isIOS8;
+
 + (NSArray *)screenSizes;
 
 @end

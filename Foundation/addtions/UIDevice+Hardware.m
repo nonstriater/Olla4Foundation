@@ -10,8 +10,23 @@
 
 @implementation UIDevice (Hardware)
 
-+ (NSArray *)screenSizes{
++ (BOOL)isIphone{
+    return ([[ [ UIDevice currentDevice ] model ] rangeOfString:@"iPhone"].location != NSNotFound);
+}
 
++ (BOOL)isIpad{
+    return [[ [ UIDevice currentDevice ] model ] rangeOfString:@"iPad"].location != NSNotFound;
+}
+
++ (BOOL)isIOS7{
+    return [[[UIDevice currentDevice] systemVersion] compare:@"7.0" options:NSNumericSearch] != NSOrderedAscending;
+}
+
++ (BOOL)isIOS8{
+    return [[[UIDevice currentDevice] systemVersion] compare:@"8.0" options:NSNumericSearch] != NSOrderedAscending;
+}
+
++ (NSArray *)screenSizes{
     return @[@"320x480", // iphone 3g,3gs,touch 1,2,3
              @"640x960", // iphone 4, 4s, touch 4
              @"640x1136",// iphone 5,5s,5c,  touch 5
